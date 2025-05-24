@@ -40,8 +40,7 @@
       Program.ParseAmmount(ref CantidadBase);
 
       //Obteniendo ganancia del custodio
-      Program.Custodio += CantidadBase % 10;
-      CantidadBase -= CantidadBase % 10;
+      Program.HandleCustodioProfit(ref CantidadBase);
 
       return CantidadBase;
     }
@@ -98,7 +97,7 @@
       {    
         try
         {
-          string Input;
+          string? Input;
           Console.WriteLine($"Penalizado {i} :\n");
           Input = Console.ReadLine();
           Input += $",Penalizado {i}";
@@ -120,9 +119,8 @@
       ParseAmmount(ref RepartoRegular);
 
       //Calculando la ganancia del custodio
-      Custodio += (RepartoRegular % 10) * NoPenalizados();
-      RepartoRegular -= RepartoRegular%10;
-      ParseAmmount(ref Custodio);
+      HandleCustodioProfit(ref RepartoRegular);
+      ParseAmmount(ref Custodio); 
 
       DisplayProffits();
     }
@@ -139,7 +137,9 @@
 
     static string FormatoPenalizacion()
     {
-      return "PorcentajeEnBase100 (X%)\n";
+      string Format = "PorcentajeEnBase100 (X%)\n";
+      string Ejemplo = "Ejemplo: 20%\n";
+      return Format+Ejemplo;
     }
 
     static void DisplayProffits()
@@ -191,6 +191,15 @@
     }
 
     static int NoPenalizados() => TotalTrabajadores - TotalPenalizados;
+    public static void HandleCustodioProfit(ref double WorkerAmmount)
+    {
+      Custodio *= 100;
+      WorkerAmmount *= 100;
+      Custodio += WorkerAmmount % 1000;
+      WorkerAmmount -= WorkerAmmount % 1000;
+      WorkerAmmount /= 100;
+      Custodio /= 100;
+    }
   }
 }
 
