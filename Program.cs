@@ -8,7 +8,7 @@
 
   public class Penalizado : IPenalizado
   {
-    public Penalizado(string? Formato = "  1 0  %")
+    public Penalizado(string? Formato = "10%")
     {
       string[] Elementos = Formato.Split(",");
       for(int i = 0; i<Elementos.Length; i++)
@@ -21,7 +21,6 @@
         }
 
         Elementos[i] = newElement;
-        Console.WriteLine(Elementos[i]);
       }
 
       ValidarFormato(Elementos);
@@ -41,12 +40,18 @@
       PorcentajePenalizado = double.Parse(Formato[0].Substring(0, Formato[0].IndexOf('%')));
       PorcentajePenalizado /= 100;
     }
+
+    public override string ToString()
+    {
+      string s = $"{PorcentajePenalizado*100}% {CantidadFinal}";
+      return s;
+    }
   }
 
 
   public static class Program
   {
-    static List<Penalizado> Penalizados;
+    static List<Penalizado> Penalizados = new();
     static double Regular = 0;
     static double Sobrante = 0;
     static double CantidadInicial = 0;
@@ -55,12 +60,12 @@
     static int TotalTrabajadores = 0;
     static int TotalPenalizados = 0;
 
-    static string TABBING = "\n*****************************************************\n";
+    static string TABBING = "*****************************************************\n";
 
     public static void Main(string[] args)
     {
       Penalizado penalizado = new Penalizado();
-      Console.WriteLine($"{TABBING} Bienvenido a Penalization, Copyright © Kiritmak {TABBING}");
+      Console.WriteLine($"{TABBING} Bienvenido a Penalization, Copyright © Kiritmak \n{TABBING}");
 
       Console.WriteLine("Ingrese la cantidad a repartir, asegurese de separar lugares decimales por puntos (.)\n");
       InputAmmount(out CantidadInicial);
@@ -76,16 +81,22 @@
       Console.WriteLine(FormatoPenalizacion());
 
       for(int i=1; i<=TotalPenalizados; i++)
-      {
-        Console.WriteLine($"Penalizado {i} :\n");
-        Console.WriteLine("sdasdasdsad");
-        Console.WriteLine("sdasdasdsad");
-        Console.WriteLine("sdasdasdsad");
-        Console.WriteLine("sdasdasdsad");
-        Console.WriteLine();
+      {    
+        try
+        {
+          string Input;
+          Console.WriteLine($"Penalizado {i} :\n");
+          Input = Console.ReadLine();
+          Penalizado NewPenalizado = new Penalizado(Input);
+          Penalizados.Add(NewPenalizado);
+          Console.WriteLine();
+        }
+        catch (Exception ex) 
+        {
+          Console.WriteLine("Por favor, siga el formato establecido\n");
+          i--;
+        } 
       }
-
-      Console.WriteLine("asdasdda");
     }
 
     static void InputAmmount<T>(out T Number) where T : IParsable<T>
@@ -101,6 +112,16 @@
     static string FormatoPenalizacion()
     {
       return "PorcentajeEnBase100 (X%)\n";
+    }
+
+    static void DisplayPenalizados()
+    {
+      Console.WriteLine($"{TABBING}Informacion sobre los penalizados\n");
+      foreach (var p in Penalizados)
+      {
+        Console.WriteLine(p + "\n");
+      }
+      Console.Write($"{TABBING}");
     }
   }
 }
