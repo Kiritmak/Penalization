@@ -1,5 +1,27 @@
 ﻿namespace Penalization
 {
+  public interface IPenalizado
+  {
+    int CalcularPenalizacion();
+  }
+
+  public class Penalizado : IPenalizado
+  {
+    public Penalizado(string? Formato = null)
+    {
+      string[] Elementos = Formato.Split(", ");
+      if()
+    }
+
+    double PorcentajePenalizado {  get; set; }
+
+    public int CalcularPenalizacion()
+    {
+      throw new NotImplementedException();
+    }
+  }
+
+
   public static class Program
   {
     static List<double> Penalizados = new List<double>();
@@ -29,6 +51,17 @@
       Console.WriteLine("\nAhora, ingrese la informacion requerida de cada trabajador penalizado, teniendo en cuenta el siguiente formato");
       Console.WriteLine(FormatoPenalizacion());
 
+      for(int i=1; i<=TotalPenalizados; i++)
+      {
+        Console.WriteLine($"Penalizado {i} :\n");
+        Console.WriteLine("sdasdasdsad");
+        Console.WriteLine("sdasdasdsad");
+        Console.WriteLine("sdasdasdsad");
+        Console.WriteLine("sdasdasdsad");
+        Console.WriteLine();
+      }
+
+      Console.WriteLine("asdasdda");
     }
 
     static void InputAmmount<T>(out T Number) where T : IParsable<T>
@@ -44,6 +77,12 @@
     static string FormatoPenalizacion()
     {
       return "PorcentajeEnBase100 (X%)\n";
+    }
+
+    public static bool ValidarFormato(string[] Formato)
+    {
+      
+      return true;
     }
   }
 }
