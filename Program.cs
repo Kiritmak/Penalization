@@ -1,2 +1,10 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿namespace Penalization
+{
+  public static class Program
+  {
+    public static void Main(string[] args)
+    {
+      Console.WriteLine($"Bienvenido a Penalization, Copyright © Kiritmak");
+    }
+  }
+}
