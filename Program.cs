@@ -57,7 +57,7 @@
 
     public override string ToString()
     {
-      string s = $"{PorcentajePenalizado*100}% {CantidadFinal}";
+      string s = $"{Nombre }: {PorcentajePenalizado*100}% {CantidadFinal}";
       return s;
     }
   }
@@ -101,6 +101,7 @@
           string Input;
           Console.WriteLine($"Penalizado {i} :\n");
           Input = Console.ReadLine();
+          Input += $",Penalizado {i}";
           Penalizado NewPenalizado = new Penalizado(Input);
           Penalizados.Add(NewPenalizado);
           Console.WriteLine();
@@ -121,6 +122,7 @@
       //Calculando la ganancia del custodio
       Custodio += (RepartoRegular % 10) * NoPenalizados();
       RepartoRegular -= RepartoRegular%10;
+      ParseAmmount(ref Custodio);
 
       DisplayProffits();
     }
@@ -153,7 +155,7 @@
       string s = "";
       s += $"{TABBING}Informacion sobre los penalizados\n\n";
       for (int i = 1; i <= Penalizados.Count; i++)
-        s += $"{Penalizados[i]}\n\n";
+        s += $"{Penalizados[i-1]}\n\n";
       s += $"{TABBING}\n";
       return s;
     }
@@ -173,7 +175,7 @@
       double CantidadTotalPenalizados = Penalizados.Aggregate((double)0, (acc, p) => acc + p.CantidadFinal);
       double CantidadTotalReal = Custodio + CantidadTotalPenalizados + CantidadTotalRegular;
       s += $"Cantidad total a repartir para todos los trabajadores no penalizados: {CantidadTotalRegular}\n";
-      s += $"Cantidad total a repartir para tods los trabajadores penalizados: {CantidadTotalPenalizados}\n";
+      s += $"Cantidad total a repartir para todos los trabajadores penalizados: {CantidadTotalPenalizados}\n";
       s += $"Cantidad a repartir al custodio: {Custodio}\n";
       s += $"Cantidad total a repartir: {CantidadTotalReal}\n";
       s += $"Cantidad restante: {CantidadInicial - CantidadTotalReal}\n";
@@ -193,7 +195,9 @@
 }
 
 /*
- * 23450.50 
- * 80%
- * 50%
+ 23450.50 
+11
+ 2
+ 80%
+ 50%
  */
