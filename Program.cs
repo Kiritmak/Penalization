@@ -31,7 +31,11 @@
 
     public double CalcularPenalizacion()
     {
-      return Program.RepartoInicial * PorcentajePenalizado;
+      //Redondeando al entero mas pequeño
+      double CantidadBase = Program.RepartoInicial * PorcentajePenalizado;
+      Program.ParseAmmount(ref CantidadBase);
+
+      return CantidadBase;
     }
 
     public void ValidarFormato(string[] Formato)
@@ -47,7 +51,6 @@
       return s;
     }
   }
-
 
   public static class Program
   {
@@ -73,6 +76,7 @@
       Console.WriteLine("\nIngrese la cantidad de trabajadores en el turno (Sin incluir al portero)\n");
       InputAmmount(out TotalTrabajadores);
       RepartoInicial = CantidadInicial / TotalTrabajadores;
+      ParseAmmount(ref RepartoInicial);
 
       Console.WriteLine("\nIngrese la cantidad de penalizados en el turno\n");
       InputAmmount(out TotalPenalizados);
@@ -116,12 +120,26 @@
 
     static void DisplayPenalizados()
     {
-      Console.WriteLine($"{TABBING}Informacion sobre los penalizados\n");
+      string[] Lineas = TextoPenalizados().Split('\n');
+      foreach (string Line in Lineas)
+        Console.WriteLine(Line);
+    }
+    static string TextoPenalizados()
+    {
+      string s = "";
+      s += $"{TABBING}Informacion sobre los penalizados\n\n";
       foreach (var p in Penalizados)
-      {
-        Console.WriteLine(p + "\n");
-      }
-      Console.Write($"{TABBING}");
+        s += p.ToString() + "\n\n";
+      s += $"{TABBING}\n";
+      return s;
+    }
+
+    public static void ParseAmmount(ref double Number)
+    {
+      Number *= 100;
+      Number = Math.Round(Number);
+      Number /= 100;
+
     }
   }
 }
