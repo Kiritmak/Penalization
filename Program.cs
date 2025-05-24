@@ -55,11 +55,11 @@
   public static class Program
   {
     static List<Penalizado> Penalizados = new();
-    static double Regular = 0;
-    static double Sobrante = 0;
-    static double CantidadInicial = 0;
+    static double RepartoRegular = 0;
     static double Portero = 0;
+    static double CantidadInicial = 0;
     public static double RepartoInicial = 0;
+    static double RestoDePenalizados = 0;
     static int TotalTrabajadores = 0;
     static int TotalPenalizados = 0;
 
@@ -76,7 +76,6 @@
       Console.WriteLine("\nIngrese la cantidad de trabajadores en el turno (Sin incluir al portero)\n");
       InputAmmount(out TotalTrabajadores);
       RepartoInicial = CantidadInicial / TotalTrabajadores;
-      ParseAmmount(ref RepartoInicial);
 
       Console.WriteLine("\nIngrese la cantidad de penalizados en el turno\n");
       InputAmmount(out TotalPenalizados);
@@ -101,6 +100,11 @@
           i--;
         } 
       }
+
+      foreach (var p in Penalizados)
+        RestoDePenalizados += RepartoInicial-p.CantidadFinal;
+      RepartoRegular = (RestoDePenalizados) / (TotalTrabajadores - TotalPenalizados) + RepartoInicial;
+      ParseAmmount(ref RepartoRegular);
     }
 
     static void InputAmmount<T>(out T Number) where T : IParsable<T>
@@ -139,7 +143,6 @@
       Number *= 100;
       Number = Math.Round(Number);
       Number /= 100;
-
     }
   }
 }
