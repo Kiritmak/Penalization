@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Programa\Resumen\" />
     <Folder Include="Resumen\" />
   </ItemGroup>
 
