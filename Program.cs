@@ -36,9 +36,12 @@
     public double CalcularPenalizacion()
     {
       //Redondeando al entero mas pequeño
-      double CantidadBase = Program.RepartoInicial * PorcentajePenalizado;
+      double CantidadBase = Program.RepartoInicial*100 * (PorcentajePenalizado*100);
+      CantidadBase /= 10000;
       Program.ParseAmmount(ref CantidadBase);
-
+      Program.CantidadTotalPenalizados *= 100;
+      Program.CantidadTotalPenalizados += CantidadBase*100;
+      Program.CantidadTotalPenalizados /= 100;
       //Obteniendo ganancia del custodio
       Program.HandleCustodioProfit(ref CantidadBase);
 
@@ -68,6 +71,7 @@
     static double CantidadInicial = 0;
     public static double RepartoInicial = 0;
     public static double Custodio = 0;
+    public static double CantidadTotalPenalizados = 0;
     static double RestoDePenalizados = 0;
     static int TotalTrabajadores = 0;
     static int TotalPenalizados = 0;
@@ -76,15 +80,17 @@
 
     public static void Main(string[] args)
     {
-      Penalizado penalizado = new Penalizado();
       Console.WriteLine($"{TABBING} Bienvenido a Penalization, Copyright © Kiritmak \n{TABBING}");
 
       Console.WriteLine("Ingrese la cantidad a repartir, asegurese de separar lugares decimales por puntos (.)\n");
       InputAmmount(out CantidadInicial);
+      ParseAmmount(ref CantidadInicial);
 
       Console.WriteLine("\nIngrese la cantidad de trabajadores en el turno (Sin incluir al custodio)\n");
       InputAmmount(out TotalTrabajadores);
-      RepartoInicial = CantidadInicial / TotalTrabajadores;
+      RepartoInicial = CantidadInicial*100 / TotalTrabajadores;
+      RepartoInicial /= 100;
+      ParseAmmount(ref RepartoInicial);
 
       Console.WriteLine("\nIngrese la cantidad de penalizados en el turno\n");
       InputAmmount(out TotalPenalizados);
@@ -113,14 +119,27 @@
       }
 
       //Calculando la ganancia de los no penalizados
-      foreach (var p in Penalizados)
-        RestoDePenalizados += RepartoInicial-p.CantidadFinal;
-      RepartoRegular = (RestoDePenalizados) / NoPenalizados() + RepartoInicial;
+      RestoDePenalizados = RepartoInicial * 100 * TotalPenalizados - CantidadTotalPenalizados*100;
+      RestoDePenalizados /= 100;
+      ParseAmmount(ref RestoDePenalizados);
+      Console.WriteLine(RepartoInicial);
+      Console.WriteLine(TotalPenalizados);
+      Console.WriteLine(CantidadTotalPenalizados);
+      Console.WriteLine($"Resto de los penalizados: {RestoDePenalizados}");
+      RepartoRegular = (((RestoDePenalizados*100) / NoPenalizados())/100)*100 + RepartoInicial*100;
+      RepartoRegular /= 100;
       ParseAmmount(ref RepartoRegular);
+      Console.WriteLine($"Reparto regular: {RepartoRegular}");
 
       //Calculando la ganancia del custodio
+      for (int i=0; i<NoPenalizados()-1; i++)
+      {
+        double dummy = RepartoRegular;
+        HandleCustodioProfit(ref dummy);
+      }
       HandleCustodioProfit(ref RepartoRegular);
-      ParseAmmount(ref Custodio); 
+      ParseAmmount(ref Custodio);
+      CantidadTotalPenalizados -= CantidadTotalPenalizados % 10;
 
       DisplayProffits();
     }
@@ -171,14 +190,17 @@
     {
       string s = "";
       s += $"{TABBING}Informacion sobre dinero restante\n\n";
-      double CantidadTotalRegular = RepartoRegular * NoPenalizados();
-      double CantidadTotalPenalizados = Penalizados.Aggregate((double)0, (acc, p) => acc + p.CantidadFinal);
+      double CantidadTotalRegular = RepartoRegular*100 * NoPenalizados();
+      CantidadTotalRegular /= 100;
+      CantidadTotalPenalizados = Penalizados.Aggregate((double)0, (acc, p) => (acc * 100 + p.CantidadFinal * 100) / 100);
       double CantidadTotalReal = Custodio + CantidadTotalPenalizados + CantidadTotalRegular;
+      ParseAmmount(ref CantidadTotalReal);
+
       s += $"Cantidad total a repartir para todos los trabajadores no penalizados: {CantidadTotalRegular}\n";
       s += $"Cantidad total a repartir para todos los trabajadores penalizados: {CantidadTotalPenalizados}\n";
       s += $"Cantidad a repartir al custodio: {Custodio}\n";
       s += $"Cantidad total a repartir: {CantidadTotalReal}\n";
-      s += $"Cantidad restante: {CantidadInicial - CantidadTotalReal}\n";
+      s += $"Cantidad restante: {(CantidadInicial*100 - CantidadTotalReal*100)/100}\n";
       s += $"{TABBING}\n";
       return s;
     }
@@ -193,12 +215,21 @@
     static int NoPenalizados() => TotalTrabajadores - TotalPenalizados;
     public static void HandleCustodioProfit(ref double WorkerAmmount)
     {
+      /*Console.Write($"Custodio: {Custodio} ");
+      Console.Write($"WorkerAmmount: {WorkerAmmount}\n");*/
+
       Custodio *= 100;
       WorkerAmmount *= 100;
-      Custodio += WorkerAmmount % 1000;
-      WorkerAmmount -= WorkerAmmount % 1000;
+      double profit = WorkerAmmount % 1000;
+      Custodio += profit;
+      WorkerAmmount -= profit;
       WorkerAmmount /= 100;
       Custodio /= 100;
+      profit /= 100;
+
+       /*Console.Write($"Custodio: {Custodio}");
+      Console.Write($"WorkerAmmount: {WorkerAmmount}");
+      Console.Write($"profit: {profit}\n");*/
     }
   }
 }
@@ -207,6 +238,6 @@
  23450.50 
 11
  2
- 80%
  50%
+80%
  */
