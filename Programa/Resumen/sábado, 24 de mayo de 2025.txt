@@ -1,3 +1,0 @@
-Cantidad a repartir por trabajador regular :	 1090
-Cantidad a repartir para el trabajador Penalizado al 20% :	 120
-Cantidad a repartir para el Custodio :	 11
